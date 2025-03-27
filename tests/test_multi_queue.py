@@ -1,45 +1,19 @@
 import unittest
 import threading
 import time
-from collections import deque
 from typing import List
-
-class MultiQueue:
-    def __init__(self, capacity: int):
-        self.capacity = capacity
-        self.items = deque()
-        
-        lock = threading.Lock()  # Local lock
-        self.not_empty = threading.Condition(lock)
-        self.not_full = threading.Condition(lock)
-
-    def add_item(self, item):
-        with self.not_full:
-            while len(self.items) >= self.capacity:
-                self.not_full.wait()
-            
-            self.items.append(item)
-            self.not_empty.notify_all()
-
-    def remove_item(self):
-        with self.not_empty:
-            while len(self.items) == 0:
-                self.not_empty.wait()
-            
-            item = self.items.popleft()
-            self.not_full.notify_all()
-            return item
 
 class TestMultiQueue(unittest.TestCase):
     def test_single_producer_consumer(self):
         queue = MultiQueue(2)
         results: List[int] = []
-        
+
+        # should be packaged inside an object that can be used in multiple tests
         def producer():
             for i in range(5):
                 queue.add_item(i)
                 time.sleep(0.1)  # Simulate processing time
-        
+
         def consumer():
             for _ in range(5):
                 item = queue.remove_item()
