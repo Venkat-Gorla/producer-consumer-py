@@ -3,6 +3,11 @@ import threading
 from src.multi_queue import MultiQueue
 
 class TryProducerConsumerTest:
+    """
+    Test harness that creates a single non-blocking producer and consumer
+    using try_* methods of MultiQueue. Both threads retry with short sleep
+    when the queue is full or empty.
+    """
     def __init__(self, queue: MultiQueue, input_data: list):
         self.queue = queue
         self.input_data = input_data

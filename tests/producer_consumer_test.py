@@ -3,6 +3,11 @@ import time
 from typing import List
 
 class ProducerConsumerTest:
+    """
+    Test harness that creates a single blocking producer and consumer
+    using the MultiQueue interface. The producer adds items with delay,
+    and the consumer removes them with a delay, simulating blocking behavior.
+    """
     def __init__(
         self,
         queue,
