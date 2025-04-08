@@ -18,7 +18,7 @@ class MultiQueue:
 
     Attributes:
         capacity (int): Maximum number of items the queue can hold.
-        items (deque): A double-ended queue to store items.
+        _items (deque): A double-ended queue to store items.
         not_full (Condition): Condition variable to signal when the queue is not full.
         not_empty (Condition): Condition variable to signal when the queue is not empty.
     """
@@ -28,25 +28,25 @@ class MultiQueue:
             raise ValueError("Queue capacity must be greater than 0")
 
         self.capacity = capacity
-        self.items = deque()
-        lock = threading.Lock()
-        self.not_full = threading.Condition(lock)
-        self.not_empty = threading.Condition(lock)
+        self._items = deque()
+        common_lock = threading.Lock()
+        self.not_full = threading.Condition(common_lock)
+        self.not_empty = threading.Condition(common_lock)
 
     def add_item(self, item):
         with self.not_full:
-            while len(self.items) >= self.capacity:
+            while len(self._items) >= self.capacity:
                 self.not_full.wait()
 
-            self.items.append(item)
+            self._items.append(item)
             self.not_empty.notify_all()
 
     def remove_item(self):
         with self.not_empty:
-            while len(self.items) == 0:
+            while len(self._items) == 0:
                 self.not_empty.wait()
 
-            item = self.items.popleft()
+            item = self._items.popleft()
             self.not_full.notify_all()
             return item
 
@@ -56,9 +56,9 @@ class MultiQueue:
         Returns True if successful, False if the queue is full.
         """
         with self.not_full:
-            if len(self.items) >= self.capacity:
+            if len(self._items) >= self.capacity:
                 return False
-            self.items.append(item)
+            self._items.append(item)
             self.not_empty.notify_all()
             return True
 
@@ -68,8 +68,8 @@ class MultiQueue:
         Returns the item if successful, or None if the queue is empty.
         """
         with self.not_empty:
-            if len(self.items) == 0:
+            if len(self._items) == 0:
                 return None
-            item = self.items.popleft()
+            item = self._items.popleft()
             self.not_full.notify_all()
             return item
