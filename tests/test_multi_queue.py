@@ -1,8 +1,8 @@
 from src.multi_queue import MultiQueue
-from tests.test_helpers import ProducerConsumerTest
+from tests.producer_consumer_test import ProducerConsumerTest
 from tests.try_producer_consumer_test import TryProducerConsumerTest
 
-def test_single_producer_consumer():
+def test_producer_consumer():
     queue = MultiQueue(2)
     input_elements = list(range(5))
 
