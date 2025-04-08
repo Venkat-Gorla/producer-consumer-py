@@ -7,10 +7,10 @@ class TestMultiQueue(unittest.TestCase):
         queue = MultiQueue(2)
         input_elements = list(range(5))
 
-        test = ProducerConsumerTest(queue, input_elements)
-        results = test.run()
+        test_harness = ProducerConsumerTest(queue, input_elements)
+        consumed_elements = test_harness.run()
 
-        self.assertEqual(results, input_elements)  # Ensure all items are consumed in order
+        self.assertEqual(consumed_elements, input_elements)
 
 if __name__ == "__main__":
     unittest.main()
