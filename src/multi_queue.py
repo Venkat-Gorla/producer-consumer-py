@@ -49,3 +49,27 @@ class MultiQueue:
             item = self.items.popleft()
             self.not_full.notify_all()
             return item
+
+    def try_add_item(self, item):
+        """
+        Attempts to add an item without blocking.
+        Returns True if successful, False if the queue is full.
+        """
+        with self.not_full:
+            if len(self.items) >= self.capacity:
+                return False
+            self.items.append(item)
+            self.not_empty.notify_all()
+            return True
+
+    def try_remove_item(self):
+        """
+        Attempts to remove an item without blocking.
+        Returns the item if successful, or None if the queue is empty.
+        """
+        with self.not_empty:
+            if len(self.items) == 0:
+                return None
+            item = self.items.popleft()
+            self.not_full.notify_all()
+            return item
