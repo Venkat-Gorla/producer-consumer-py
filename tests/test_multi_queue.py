@@ -23,6 +23,8 @@ def test_try_producer_consumer():
     assert produced == input_data
     assert consumed == input_data
 
+# this test verifies producer consumer blocking behavior with an Event and 
+# minimal use of sleep
 def test_producer_consumer_with_event():
     queue = MultiQueue(2)
     input_elements = list(range(5))
@@ -32,24 +34,20 @@ def test_producer_consumer_with_event():
     producer_event.wait()
     time.sleep(0.01)
 
-    consumed = []
-    def consume_items():
-        for _ in range(len(input_elements)):
-            consumed.append(queue.remove_item())
-
-    consumer_thread = threading.Thread(target=consume_items)
-    consumer_thread.start()
+    consumed_elements = []
+    consumer_thread = _consume_items(queue, len(input_elements), consumed_elements)
 
     producer_thread.join()
     consumer_thread.join()
 
-    assert consumed == input_elements
+    assert consumed_elements == input_elements
 
 def _produce_items_and_signal(
     queue: MultiQueue, 
     input_elements: List[int], 
     producer_event: threading.Event
 ) -> threading.Thread:
+    # Ensure producer fills queue before signaling
     assert len(input_elements) > queue.capacity
 
     def produce_items():
@@ -63,3 +61,16 @@ def _produce_items_and_signal(
     producer_thread = threading.Thread(target=produce_items)
     producer_thread.start()
     return producer_thread
+
+def _consume_items(
+    queue: MultiQueue, 
+    elements_count: int,
+    consumed_elements: List[int]
+) -> threading.Thread:
+    def consume_items():
+        for _ in range(elements_count):
+            consumed_elements.append(queue.remove_item())
+
+    consumer_thread = threading.Thread(target=consume_items)
+    consumer_thread.start()
+    return consumer_thread
