@@ -52,6 +52,15 @@ producer-consumer-py/
 - Try-based coordination without blocking using retry loops
 - Multi-producer and multi-consumer test with even split and lock-safe appending
 
+### To run the tests:
+
+```bash
+pytest
+```
+## ✅ Unit Tests in Action
+
+Will be added soon
+
 ## 🚀 Usage
 
 ```python
@@ -64,13 +73,6 @@ item = queue.remove_item()   # Blocking remove
 queue.try_add_item(20)       # Non-blocking add
 queue.try_remove_item()      # Non-blocking remove
 ```
-
-To run tests:
-
-```bash
-pytest
-```
-## ✅ Unit Tests in Action
 
 ## 🔍 Future Improvements
 
