@@ -59,7 +59,7 @@ pytest
 ```
 ## ✅ Unit Tests in Action
 
-Will be added soon
+<img src="./public/unit-tests.PNG" alt="Unit Test Results" width="700" />
 
 ## 🚀 Usage
 
